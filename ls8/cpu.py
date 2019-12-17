@@ -96,9 +96,13 @@ class CPU:
                 self.reg[reg_a] = reg_b
                 self.pc += 3
 
+            if command == 0b10100010:
+                self.reg[reg_a] = self.reg[reg_a] * self.reg[reg_b]
+                self.pc += 3
+
             if command == 0b01000111:
                 print(self.reg[reg_a])
                 self.pc += 2
 
             if command == 0b00000001:
-                running = False          
+                running = False
