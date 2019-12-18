@@ -10,6 +10,7 @@ class CPU:
         self.pc = 0
         self.ram = [0] * 256
         self.reg = [0] * 8 
+        self.sp = 7
 
     def ram_read(self, address):
         return self.ram[address]
@@ -91,18 +92,41 @@ class CPU:
             reg_a = self.ram[self.pc + 1]
             reg_b = self.ram[self.pc + 2]
             
-
+            # Ldi
             if command == 0b10000010:
                 self.reg[reg_a] = reg_b
                 self.pc += 3
 
+            # mul
             if command == 0b10100010:
                 self.reg[reg_a] = self.reg[reg_a] * self.reg[reg_b]
                 self.pc += 3
 
+            # prn
             if command == 0b01000111:
                 print(self.reg[reg_a])
                 self.pc += 2
 
+            # push
+            if command == 0b01000101:
+                self.reg[self.sp] -= 1
+
+                reg_a = self.ram[self.pc + 1]
+                value = self.reg[reg_a]
+                self.ram[self.reg[self.sp]] = value
+
+                self.pc += 2
+
+            # pop
+            if command == 0b01000110:
+                reg_a = self.ram[self.pc + 1]
+                value = self.ram[self.reg[self.sp]]
+                self.reg[reg_a] = value
+
+                self.reg[self.sp] += 1
+
+                self.pc += 2
+
+            # hlt
             if command == 0b00000001:
                 running = False
