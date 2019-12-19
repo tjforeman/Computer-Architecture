@@ -152,6 +152,3 @@ class CPU:
             # hlt
             if command == 0b00000001:
                 running = False
-
-            else:
-                print(f'error at{self.pc}')
