@@ -127,6 +127,31 @@ class CPU:
 
                 self.pc += 2
 
+            # call
+            if command == 0b01010000:
+                return_address = self.pc + 2
+                self.reg[self.sp] -= 1
+                self.ram[self.reg[self.sp]] = return_address
+
+                reg_num = self.ram[self.pc + 1]
+                sub_address = self.reg[reg_num]
+                self.pc = sub_address
+
+            # ret
+            if command == 0b00010001:
+                return_address = self.ram[self.reg[self.sp]]
+                self.reg[self.sp] +=1
+
+                self.pc = return_address
+
+            # add
+            if command == 0b10100000:
+                self.reg[reg_a] += self.reg[reg_b]
+                self.pc +=3
+
             # hlt
             if command == 0b00000001:
                 running = False
+
+            else:
+                print(f'error at{self.pc}')
