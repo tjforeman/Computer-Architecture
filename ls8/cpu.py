@@ -60,7 +60,23 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "AND":
+            self.reg[reg_a] = self.reg[reg_b] & self.reg[reg_b]
+        elif op == "OR":
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+        elif op == "XOR":
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
+        elif op == "NOT":
+            self.reg[reg_a] = ~self.reg[reg_a]
+        elif op == "SHL":
+            self.reg[reg_a] = self.reg[reg_a] << self.reg[reg_b]
+        elif op == "SHR":
+            self.reg[reg_a] = self.reg[reg_a] >> self.reg[reg_b]
+        elif op == "MOD":
+            self.reg[reg_a] = self.reg[reg_a] % self.reg[reg_b]
+            if self.reg[reg_a] == 0:
+                print('error remainder is 0')
+                running = False
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -180,6 +196,41 @@ class CPU:
                     self.pc = self.reg[reg_a]
                 else:
                     self.pc += 2
+
+            # AND
+            if command == 0b10101000:
+                self.alu("AND", reg_a, reg_b)
+                self.pc +=3
+            
+            # OR
+            if command == 0b10101010:
+                self.alu("OR", reg_a , reg_b)
+                self.pc += 3
+
+            # XOR
+            if command == 0b10101011:
+                self.alu("XOR", reg_a, reg_b)
+                self.pc += 3
+
+            # NOT
+            if command == 0b01101001:
+                self.alu("NOT", reg_a, reg_b)
+                self.pc += 2
+
+            # SHL
+            if command == 0b10101100:
+                self.alu("SHL", reg_a, reg_b)
+                self.pc += 3
+
+            # SHR
+            if command == 0b10101101:
+                self.alu("SHR", reg_a, reg_b)
+                self.pc += 3
+            
+            # MOD
+            if command == 0b10100100:
+                self.alu("MOD", reg_a, reg_b)
+                self.pc += 3
 
             # hlt
             if command == 0b00000001:
