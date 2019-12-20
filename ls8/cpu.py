@@ -11,6 +11,7 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8 
         self.sp = 7
+        self.FL = 0
 
     def ram_read(self, address):
         return self.ram[address]
@@ -148,6 +149,37 @@ class CPU:
             if command == 0b10100000:
                 self.reg[reg_a] += self.reg[reg_b]
                 self.pc +=3
+
+            # cmp
+            if command == 0b10100111:
+                value_a = self.reg[reg_a]
+                value_b = self.reg[reg_b]
+
+                if value_a == value_b:
+                    self.FL = 0b00000001
+                if value_a > value_b:
+                    self.FL = 0b00000010
+                if value_a < value_b:
+                    self.FL = 0b00000100
+                self.pc += 3
+
+            # jmp
+            if command == 0b01010100:
+                self.pc = self.reg[reg_a]
+
+            # jeq
+            if command == 0b01010101:
+                if self.FL == 0b00000001:
+                    self.pc = self.reg[reg_a]
+                else:
+                    self.pc += 2
+            
+            # jne
+            if command == 0b01010110:
+                if self.FL != 0b00000001:
+                    self.pc = self.reg[reg_a]
+                else:
+                    self.pc += 2
 
             # hlt
             if command == 0b00000001:
